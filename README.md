@@ -1,123 +1,110 @@
-# Internal ETL Data Pipeline
+# SDD Toolkit - Spec-Driven Development for Python Projects
 
-A spec-driven Python ETL framework for internal data tooling. Built to extract data from multiple internal sources, transform and validate it, and load it into target destinations reliably.
+> Drop spec-driven development into any Python project in one command.
 
----
+SDD helps teams write the spec first, let AI-assisted tools build from that shared context, and keep specs, implementation plans, reviews, and project memory in sync as the code evolves.
 
-## Project Overview
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![MCP](https://img.shields.io/badge/MCP-compatible-purple.svg)](https://modelcontextprotocol.io)
+[![Works with](https://img.shields.io/badge/works%20with-Claude%20%7C%20Cursor%20%7C%20Copilot-orange.svg)]()
 
-| Property | Value |
-|----------|-------|
-| Language | Python 3.11+ |
-| Framework | Custom ETL runner + Apache Airflow (optional) |
-| Storage targets | PostgreSQL, S3, local filesystem |
-| Source systems | REST APIs, PostgreSQL, CSV/Excel files |
-| Spec format | Markdown (SDD) |
-| MCP integration | `@modelcontextprotocol/server-filesystem` |
+## What This Gives You
 
----
+- A one-command bootstrap script: `python sdd-init.py /path/to/project`
+- Reusable slash command instructions in `.github/sdd/`
+- A living `docs/specs/` folder for feature specs and implementation plans
+- An AI memory file at `docs/specs/CLAUDE.md`
+- A `reviews/` folder for PR and implementation review reports
+- Examples for APIs, Django models, and data pipelines
 
-## Repository Structure
+## Why SDD Matters
 
-```
-sdd-etl-repo/
-├── .mcp/
-│   └── config.json                  # MCP server config
-├── specs/
-│   ├── features/
-│   │   ├── FEAT-001-pipeline-runner.md
-│   │   ├── FEAT-002-extractor-base.md
-│   │   ├── FEAT-003-transformer-base.md
-│   │   └── FEAT-004-loader-base.md
-│   ├── architecture/
-│   │   ├── ARCH-001-system-overview.md
-│   │   └── ARCH-002-data-flow.md
-│   └── api/
-│       └── API-001-pipeline-config-schema.md
-├── docs/
-│   ├── onboarding.md
-│   └── runbook.md
-├── templates/
-│   ├── feature-spec.md
-│   ├── architecture-spec.md
-│   └── api-spec.md
-├── src/
-│   ├── extractors/
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── csv_extractor.py
-│   │   ├── db_extractor.py
-│   │   └── api_extractor.py
-│   ├── transformers/
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── cleaner.py
-│   │   └── validator.py
-│   ├── loaders/
-│   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── db_loader.py
-│   │   └── s3_loader.py
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   ├── logger.py
-│   │   └── config.py
-│   └── pipeline.py
-├── tests/
-│   ├── test_extractors.py
-│   ├── test_transformers.py
-│   └── test_loaders.py
-├── pyproject.toml
-├── .env.example
-└── .gitignore
-```
-
----
+| Without SDD | With SDD |
+|---|---|
+| Requirements live in chat threads | Specs live in version-controlled Markdown |
+| New contributors reverse-engineer the codebase | Contributors read specs and start with context |
+| AI output drifts from requirements | AI reads specs before generating code |
+| Code and docs drift apart | `/update` keeps them aligned |
+| PR reviews miss requirement gaps | `/review` checks changes against the spec |
 
 ## Quick Start
 
 ```bash
-# 1. Clone and install
-git clone <repo-url> && cd sdd-etl-repo
-pip install -e ".[dev]"
+# 1. Clone this toolkit
+git clone https://github.com/pdivija92-eng/SDD-MCP-Repo-.git
+cd SDD-MCP-Repo-
 
-# 2. Configure environment
-cp .env.example .env
-# Edit .env with your DB credentials and API keys
+# 2. Bootstrap SDD into any Python project
+python sdd-init.py /path/to/your-project
 
-# 3. Run a pipeline
-python -m src.pipeline run --config pipelines/example.yaml
+# 3. Open the target project in VS Code or Cursor
+code /path/to/your-project
 
-# 4. Run tests
-pytest tests/
+# 4. Start with a spec
+/specify I want a user authentication module with JWT tokens
 ```
 
----
+Your project now has `docs/specs/`, `.github/sdd/`, MCP config, and `reviews/`.
 
-## MCP Integration
+## Slash Commands
 
-AI tools (Claude, Cursor, etc.) can read specs directly via MCP:
+| Command | What it does | Output |
+|---|---|---|
+| `/specify` | Turns a feature idea into a formal spec | `docs/specs/FEAT-XXX-name.md` |
+| `/clarify` | Refines an incomplete spec through focused questions | Updated spec |
+| `/plan` | Breaks a spec into implementation tasks | `docs/specs/FEAT-XXX-plan.md` |
+| `/implement` | Generates code from an approved spec and plan | Source and test files |
+| `/review` | Reviews code or PR changes against the spec | `reviews/FEAT-XXX-review.md` |
+| `/update` | Syncs specs and memory after code changes | Updated spec and memory files |
+
+## Repository Layout Added to Your Project
+
+```text
+your-project/
++-- docs/
+|   +-- specs/
+|       +-- CLAUDE.md
+|       +-- FEAT-001-example.md
+|       +-- FEAT-001-plan.md
++-- reviews/
+|   +-- FEAT-001-review.md
++-- .github/
+|   +-- sdd/
+|       +-- specify.md
+|       +-- clarify.md
+|       +-- plan.md
+|       +-- implement.md
+|       +-- review.md
+|       +-- update.md
++-- .mcp/
+    +-- config.json
+```
+
+Nothing in your existing application code changes. SDD lives alongside it.
+
+## Try the Demo
 
 ```bash
-npx @modelcontextprotocol/server-filesystem ./specs
+cd demo/
+python run_demo.py
 ```
 
-The specs folder exposes all feature, architecture, and API specs as context for AI-assisted development. When Claude reads the specs, it understands the full contract before generating any code.
+The demo walks through a complete SDD cycle using a sample ETL pipeline: spec, plan, implementation, review, and update.
 
----
+## Examples
 
-## Spec-Driven Workflow
+- `examples/fastapi-auth-module/` - JWT authentication with FastAPI
+- `examples/django-orm-task/` - Django model and signal workflow
+- `examples/pyspark-data-processing/` - CSV-to-Delta data pipeline
 
-1. **Write spec first** — define inputs, outputs, and transformations in `specs/features/`
-2. **Get AI review** — Claude reads the spec via MCP and validates completeness
-3. **Generate implementation** — AI generates code conforming to the spec
-4. **Validate against spec** — tests reference acceptance criteria from specs
-5. **Update spec on change** — spec is the source of truth, code follows
+## Who This Is For
 
----
+This toolkit is useful for teams and individual developers who want a lightweight, repeatable way to align requirements, implementation plans, code, tests, and reviews.
 
-## Contributing
+It works well for backend services, data engineering pipelines, automation projects, and Python templates where long-lived context matters.
 
-- All new features require a spec in `specs/features/` before any code is written
-- Specs must have status `Approved` before implementation begins
-- PRs must reference the spec ID (e.g. `FEAT-005`) in the commit message
+## Connect
+
+- LinkedIn: [linkedin.com/in/divija-p-a61b42252](https://linkedin.com/in/divija-p-a61b42252)
+- GitHub: [pdivija92-eng](https://github.com/pdivija92-eng)

@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "specs": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./specs"],
-      "description": "Exposes the specs/ directory to MCP-compatible AI tools"
-    }
-  }
-}

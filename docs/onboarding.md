@@ -1,95 +1,54 @@
-# Onboarding Guide — Internal ETL Pipeline
+# SDD Toolkit Onboarding
 
-Welcome to the internal ETL pipeline project. This guide gets you from zero to running your first pipeline in under 15 minutes.
-
----
+This guide helps a new user clone the toolkit and add Spec-Driven Development to an existing Python project.
 
 ## Prerequisites
 
 - Python 3.11+
-- Access to the internal PostgreSQL database
-- AWS credentials (for S3 loaders)
-- Node.js 18+ (for MCP server)
-
----
+- Git
+- Node.js 18+ if you want to use the generated MCP filesystem config
+- An AI assistant or editor that can read Markdown instructions
 
 ## Setup
 
-### 1. Install dependencies
-
 ```bash
-git clone <repo-url>
-cd sdd-etl-repo
-pip install -e ".[dev]"
+git clone https://github.com/pdivija92-eng/SDD-MCP-Repo-.git
+cd SDD-MCP-Repo-
+python sdd-init.py /path/to/your-project
 ```
 
-### 2. Configure environment
+The target project will receive:
 
-```bash
-cp .env.example .env
-# Edit .env with your credentials
+- `docs/specs/`
+- `.github/sdd/`
+- `reviews/`
+- `.mcp/config.json`
+- `.gitignore` additions for SDD cache files
+
+## First Workflow
+
+Open the target project in your editor and run:
+
+```text
+/specify I want to build [describe your feature]
+/clarify FEAT-001
+/plan FEAT-001
+/implement FEAT-001
+/review FEAT-001
+/update
 ```
-
-### 3. Verify setup
-
-```bash
-pytest tests/ -v
-```
-
-All tests should pass. They use mocks, so no real DB or S3 access needed.
-
----
-
-## Running a Pipeline
-
-```bash
-# Dry run — extract and transform only, no loading
-python -m src.pipeline run --config pipelines/example.yaml --dry-run
-
-# Full run
-python -m src.pipeline run --config pipelines/example.yaml
-```
-
-The runner prints a summary table at the end showing rows extracted, transformed, loaded, and rejected.
-
----
-
-## Creating a New Pipeline
-
-1. Copy an existing config or use `specs/api/API-001-pipeline-config-schema.md` as a reference
-2. Create `pipelines/your_pipeline_name.yaml`
-3. Test with `--dry-run` first
-4. Write a spec in `specs/features/FEAT-XXX-your-pipeline.md` before going to production
-
----
-
-## Connecting to Claude via MCP
-
-MCP lets Claude read your specs as context, so it understands the contracts before helping you write code.
-
-```bash
-# Start the MCP filesystem server
-npx @modelcontextprotocol/server-filesystem ./specs
-
-# In Claude Desktop: Settings → MCP → Add Server → point to the running server
-```
-
-Once connected, Claude will read specs from `specs/` automatically when you ask it to help with the ETL pipeline.
-
----
 
 ## Project Conventions
 
-- All new pipeline features need a spec in `specs/features/` before code is written
-- Spec status must be `Approved` before implementation begins
-- Commit messages must reference the spec ID: `feat(FEAT-005): add Excel extractor`
-- Tests live in `tests/` and mirror the `src/` structure
-- Never hardcode credentials — use `${ENV_VAR}` in YAML configs
-
----
+- Specs live in `docs/specs/`.
+- Review reports live in `reviews/`.
+- Command instructions live in `.github/sdd/`.
+- New features should have a spec before implementation.
+- Run `/review` before merging meaningful changes.
+- Run `/update` after implementation to refresh spec status and memory.
 
 ## Getting Help
 
-- Read the specs in `specs/` — they are the source of truth
-- Check `docs/runbook.md` for troubleshooting common issues
-- Ask Claude — it has full context on the project via MCP
+- Read [README.md](../README.md) for the public quick start.
+- Read [INTEGRATION.md](../INTEGRATION.md) for team rollout guidance.
+- Read `.github/sdd/*.md` to see what each SDD command should do.
